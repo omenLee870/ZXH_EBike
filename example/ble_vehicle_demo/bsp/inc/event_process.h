@@ -1,0 +1,21 @@
+#ifndef _EVENT_PROCESS_H
+#define _EVENT_PROCESS_H
+
+
+
+
+
+
+
+
+
+
+/*º¯ÊýÉùÃ÷*/
+extern void event_process(void);
+
+
+
+
+
+
+#endif

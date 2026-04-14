@@ -1,0 +1,18 @@
+# Keil MDK ignore rules
+
+# 忽略 MDK 文件夹下的所有内容
+example\ble_vehicle_demo\Project\MDK-ARM_uV4
+
+# 忽略 Keil 编译生成的文件
+*.o
+*.axf
+*.hex
+*.bin
+*.map
+*.lst
+*.crf
+*.d
+*.htm
+*.build_log.htm
+*.uvgui.*
+*.uvoptx

@@ -1,0 +1,25 @@
+# 编译输出
+*.o
+*.axf
+*.hex
+*.bin
+*.map
+*.lst
+*.crf
+*.d
+*.htm
+*.bak
+
+# Keil 项目用户配置
+*.uvoptx
+*.uvopt
+*.uvgui.*
+
+# 编译临时文件夹
+**/list/
+**/obj/
+**/RTE/
+**/DebugConfig/
+
+# 具体项目文件夹
+example/ble_vehicle_demo/Project/MDK-ARM_uV4/
