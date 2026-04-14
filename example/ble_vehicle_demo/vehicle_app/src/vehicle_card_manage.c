@@ -8,7 +8,7 @@ card_param_t g_card_param =
 	.card_num  = 0,
 };
 
-void recover_check_mode(void)//»Ö¸´¼ì¿¨Ä£Ê½
+void recover_check_mode(void)//ï¿½Ö¸ï¿½ï¿½ì¿¨Ä£Ê½
 {
 	g_card_mode_e = CHECK_CARD_MODE;	
 }
@@ -16,10 +16,10 @@ stack_timer_t card_timer;
 void card_event_handler(stack_timer_t *ts)
 {	
 	if(g_card_mode_e == ADD_CARD_MODE){
-		//Ìí¼Ó¿¨³¬Ê±Ê§°Ü
+		//ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½Ê±Ê§ï¿½ï¿½
 	}
 	else if(g_card_mode_e == DEL_CARD_MODE){
-		//É¾³ý¿¨³¬Ê±Ê§°Ü
+		//É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ê§ï¿½ï¿½
 	}                                                                 
 	recover_check_mode();
 }
@@ -28,7 +28,7 @@ void card_operation_time(uint16_t time)
 	lib_stop_timer(&card_timer);
 	lib_start_timer(&card_timer,card_event_handler,time);	
 }
-void card_mode_operation_time(card_mode_e mode,uint16_t time)//ÉèÖÃ¿¨Æ¬²Ù×÷³¬Ê±Ê±¼ä-ÓÃÓÚ¿¨Æ¬Ìí¼ÓºÍÉ¾³ý
+void card_mode_operation_time(card_mode_e mode,uint16_t time)//ï¿½ï¿½ï¿½Ã¿ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ê±ï¿½ï¿½-ï¿½ï¿½ï¿½Ú¿ï¿½Æ¬ï¿½ï¿½ï¿½Óºï¿½É¾ï¿½ï¿½
 {
 	set_card_mode(mode);
 	card_operation_time(time);
@@ -44,10 +44,10 @@ static uint8_t compare_card_id(void)
 	}
 	return 0;
 }
-void check_card(void)//¼ì¿¨
+void check_card(void)//ï¿½ì¿¨
 {
-	if(compare_card_id()){//ÒÑ¾­Ìí¼Ó¿¨Æ¬ÇÒÓÐ¶ÔÓ¦µÄ¿¨ºÅ
-		//¿Í»§×Ô¼ºÌí¼Ó
+	if(compare_card_id()){//ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½Æ¬ï¿½ï¿½ï¿½Ð¶ï¿½Ó¦ï¿½Ä¿ï¿½ï¿½ï¿½
+		//ï¿½Í»ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½
 		LogInfo("check_card_success\r\n");
 	}	
 }
@@ -59,15 +59,16 @@ static uint8_t find_add_card_place(void)
 			return i;
 		}		
 	}
+	return 0;
 }
-void add_card(void)//Ìí¿¨
+void add_card(void)//ï¿½ï¿½ï¿½ï¿½
 {
 	uint8_t add_place;
 LogInfo("add_card::g_card_param.card_num = %d\r\n",g_card_param.card_num);
 LogHex("IDA",IDA,10);
-	if((g_card_param.card_num < CARD_TOTAL_NUM)//¿¨»¹Ã»Ìí¼ÓÂú
-	 &&(!compare_card_id())){//¿¨ºÅ²»Ò»Ñù
-		if(write_card(PassWdA,PassWdA,6,otp_addr,6)){//Êý¾ÝÐ´½øÈ¥
+	if((g_card_param.card_num < CARD_TOTAL_NUM)//ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 &&(!compare_card_id())){//ï¿½ï¿½ï¿½Å²ï¿½Ò»ï¿½ï¿½
+		if(write_card(PassWdA,PassWdA,6,otp_addr,6)){//ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½È¥
 			g_card_param.card_num++;		
 			add_place = find_add_card_place();
 			memcpy(&g_card_param.card_id[add_place][0],IDA,10);
@@ -79,24 +80,24 @@ LogHex("IDA",IDA,10);
 		}
 	}
 	else if(compare_card_id()&&(!compare_card_sn(otp_addr,6))){
-		if(write_card(PassWdA,PassWdA,6,otp_addr,6)){//Êý¾ÝÐ´½øÈ¥	
+		if(write_card(PassWdA,PassWdA,6,otp_addr,6)){//ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½È¥	
 		}
 		else{
 			LogInfo("write_data_to_card_fail\r\n");
 		}
 	}
 	else{
-		if(g_card_param.card_num >= CARD_TOTAL_NUM){//¿¨Ìí¼ÓÂú
+		if(g_card_param.card_num >= CARD_TOTAL_NUM){//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		}
-		else if(compare_card_id()&&compare_card_sn(otp_addr,6)){//¿¨ÒÑ¾­Ìí¼Ó¹ý
-			//Ìí¼Ó¿¨Æ¬³É¹¦½Ó¿Úº¯Êý-¿Í»§×Ô¼ºÌí¼Ó	
+		else if(compare_card_id()&&compare_card_sn(otp_addr,6)){//ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½
+			//ï¿½ï¿½ï¿½Ó¿ï¿½Æ¬ï¿½É¹ï¿½ï¿½Ó¿Úºï¿½ï¿½ï¿½-ï¿½Í»ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½	
 		}
 		LogInfo("add_card_fail\r\n");	
 	}			 
 	recover_check_mode();
 	lib_stop_timer(&card_timer);				 
 }
-void del_card(void)//É¾¿¨
+void del_card(void)//É¾ï¿½ï¿½
 {
 	if(g_card_param.card_num != 0){
 		uint8_t del_id = compare_card_id();
@@ -124,7 +125,7 @@ void set_card_mode(card_mode_e mode)
 uint8_t is_vaild_card(void)
 {
 	if(compare_card_secret_key(PassWdA,6)){
-		if(g_card_mode_e == ADD_CARD_MODE){//´¦ÓÚÌí¿¨Ä£Ê½
+		if(g_card_mode_e == ADD_CARD_MODE){//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 			LogInfo("ADD_CARD_MODE:vaild_card\r\n");
 			return VAILD_CARD;
 		}
@@ -139,14 +140,14 @@ uint8_t is_vaild_card(void)
 stack_timer_t card_state_timer;
 void card_state_handler(stack_timer_t *ts)
 {	
-	g_card_operate_state_e = CARD_PUT_UP;//1sºóËãÌ§Æð
+	g_card_operate_state_e = CARD_PUT_UP;//1sï¿½ï¿½ï¿½ï¿½Ì§ï¿½ï¿½
 }
 void card_state_switch_time(uint16_t time)
 {
 	lib_stop_timer(&card_state_timer);
 	lib_start_timer(&card_state_timer,card_state_handler,time);	
 }
-/*¿¨Î´Àë¿ª*/
+/*ï¿½ï¿½Î´ï¿½ë¿ª*/
 void card_put_down(void)
 {
 	if(g_card_operate_state_e == CARD_PUT_DOWN){
@@ -155,11 +156,11 @@ void card_put_down(void)
 }
 void card_manage(void)
 {
-	g_card_type_e = is_vaild_card();
-	if((g_card_type_e != INVAILD_CARD)){//ÓÐÐ§¿¨
-//	 &&(get_card_id())){//»ñÈ¡¿¨ºÅ-¼ÓÁËË¢¿¨±äÂý	
+	g_card_type_e = (card_type_e)is_vaild_card();
+	if((g_card_type_e != INVAILD_CARD)){//ï¿½ï¿½Ð§ï¿½ï¿½
+//	 &&(get_card_id())){//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 		if(g_card_operate_state_e == CARD_PUT_UP){
-			g_card_operate_state_e = CARD_PUT_DOWN;//ÓÐ¿¨·ÅÏÂ
+			g_card_operate_state_e = CARD_PUT_DOWN;//ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½ï¿½
 			card_mode[g_card_mode_e]();
 		}
 	}

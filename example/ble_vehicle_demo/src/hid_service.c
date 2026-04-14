@@ -129,7 +129,7 @@ void ble_initilazed(char *device_name,uint8_t dev_name_len,char *apperace,uint8_
 {
 	att_db_util_init();
 	att_db_util_add_service_uuid16(ORG_BLUETOOTH_SERVICE_GENERIC_ACCESS);
-	att_db_util_add_characteristic_uuid16(0x2A00,ATT_PROPERTY_READ,ATT_SECURITY_NONE,ATT_SECURITY_NONE,device_name,sizeof(dev_name_len));
+	att_db_util_add_characteristic_uuid16(0x2A00,ATT_PROPERTY_READ,ATT_SECURITY_NONE,ATT_SECURITY_NONE,(uint8_t *)device_name,sizeof(dev_name_len));
 	att_db_util_add_characteristic_uuid16(0x2A01,ATT_PROPERTY_READ,ATT_SECURITY_NONE,ATT_SECURITY_NONE,apperace,sizeof(apperace_len));
 	
 }
@@ -137,17 +137,17 @@ void ble_initilazed(char *device_name,uint8_t dev_name_len,char *apperace,uint8_
 
 void ble_hid_service_register(void)
 {
-//¡¾1¡¿×¢²ápinÐÅÏ¢
+//ï¿½ï¿½1ï¿½ï¿½×¢ï¿½ï¿½pinï¿½ï¿½Ï¢
 	att_db_util_add_service_uuid16(ORG_BLUETOOTH_SERVICE_DEVICE_INFORMATION);
 	uint8_t pinid_string[7]={0x02,0xAC,0x05,0x52,0x02,0xDB,0x07};
 	att_db_util_add_characteristic_uuid16(ORG_BLUETOOTH_CHARACTERISTIC_PNP_ID,ATT_PROPERTY_READ,ATT_SECURITY_ENCRYPTED,ATT_SECURITY_NONE,pinid_string,sizeof(pinid_string));
 
-//¡¾2¡¿×¢²áÈË»ú½Ó¿ÚÉè±¸
+//ï¿½ï¿½2ï¿½ï¿½×¢ï¿½ï¿½ï¿½Ë»ï¿½ï¿½Ó¿ï¿½ï¿½è±¸
 	att_db_util_add_service_uuid16(ORG_BLUETOOTH_SERVICE_HUMAN_INTERFACE_DEVICE);
 	uint8_t val_hal[2]={0,0};
 	uint8_t mode = 1;
 	
-//¡¾3¡¿×¢²áÐ­Òé¡¢±¨¸æ¡¢map¡¢
+//ï¿½ï¿½3ï¿½ï¿½×¢ï¿½ï¿½Ð­ï¿½é¡¢ï¿½ï¿½ï¿½æ¡¢mapï¿½ï¿½
 	att_db_util_add_characteristic_uuid16(ORG_BLUETOOTH_CHARACTERISTIC_PROTOCOL_MODE,ATT_PROPERTY_READ | ATT_PROPERTY_DYNAMIC | ATT_PROPERTY_WRITE_WITHOUT_RESPONSE,ATT_SECURITY_ENCRYPTED,ATT_SECURITY_NONE,&mode,1);
 
 	att_db_util_add_characteristic_uuid16(ORG_BLUETOOTH_CHARACTERISTIC_REPORT,ATT_PROPERTY_READ | ATT_PROPERTY_NOTIFY | ATT_PROPERTY_WRITE | ATT_PROPERTY_DYNAMIC,ATT_SECURITY_ENCRYPTED,ATT_SECURITY_NONE,val_hal,2);

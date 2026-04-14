@@ -1,0 +1,8 @@
+工程目录结构
+- drivers/                  # 存放芯片原厂提供的底层驱动 (GPIO, Timer, UART等)
+- middleware/          # 【新建立】存放可移植的框架层代码
+ - multi_timer/          # 任务调度器核心 (multi_timer.c/h)
+ - sys_scheduler/      # 调度器封装层 (用于适配不同芯片的心跳)
+- vehicle_app/          # 存放ZXHEBike核心业务逻辑
+ - inc/
+ - src/

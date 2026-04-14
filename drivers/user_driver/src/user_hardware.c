@@ -7,7 +7,7 @@ uint8_t ble_p_priority = 0x01;
 void nvic_configuration(void)
 {
 	NVIC_SetPriorityGrouping(0x05);//4bit for preempt and 4bit for sub
-	/*À¶ÑÀÓÅÏÈ¼¶-0x02*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½-0x02*/
 	NVIC_SetPriority(LIB_13_IRQn,NVIC_EncodePriority(0x05, ble_p_priority,0x00));
 	NVIC_SetPriority(LIB_5_IRQn ,NVIC_EncodePriority(0x05, ble_p_priority,0x00)); 
 	NVIC_SetPriority(LIB_8_IRQn ,NVIC_EncodePriority(0x05, ble_p_priority,0x00));    
@@ -89,7 +89,7 @@ void hardware_init(void)
 	lib_set_lock_irq(ble_p_priority);	
 	//Initialize nvic
 	nvic_configuration();
-	/*ÉèÖÃ·¢Éä¹¦ÂÊ*/
+	/*ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ä¹¦ï¿½ï¿½*/
 	lib_radio_set_tx_power(TX_POWER_0);
 }
 

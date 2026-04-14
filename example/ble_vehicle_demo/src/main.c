@@ -16,6 +16,8 @@
  ****************************************************************************************
  */
 #include "bsp.h"
+#include "app.h"
+#include "sys_scheduler.h"
 
 void bt_task_schdule(void)
 {
@@ -28,16 +30,13 @@ int main(void)
 {
     /* 芯片硬件配置 */
     hardware_init(); 
-
     /* 蓝牙 + bsp_init */
     transport_app_init();
-        
+	app_tasks_init();
     while(1) {
 		/* 蓝牙事件调度 */
 		bt_task_schdule();
-        
-        /* 事件处理 */
-        event_process();	
+		sys_scheduler_run();
         
 #if (WDT_ENABLE)
 		iwdt_reload_counter();

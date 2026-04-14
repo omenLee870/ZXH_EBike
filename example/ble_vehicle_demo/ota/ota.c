@@ -10,7 +10,7 @@ typedef struct {
     char password[12];
 } ws_ota_pid_key_t;
 
-//KeyÖµ×Ô¶¨Òå
+//KeyÖµï¿½Ô¶ï¿½ï¿½ï¿½
 #define OTA_VENDOR_ID       0x81AB
 #define OTA_PRODUCT_ID      0x0001
 
@@ -18,7 +18,7 @@ typedef struct {
 
 ws_ota_pid_key_t Key = {OTA_VENDOR_ID, OTA_PRODUCT_ID, OTA_PRODUCT_PASS};
 uint8_t ota_addr[6] = {0xFC,0xFC,0xDC,0x81,0x00,0xE4};
-uint16_t crc_init = 0x0000; //CRC³õÊ¼Öµ
+uint16_t crc_init = 0x0000; //CRCï¿½ï¿½Ê¼Öµ
 
 typedef struct{
     uint16_t company_id;
@@ -30,9 +30,9 @@ typedef struct{
     uint8_t xtal_select;
 	uint8_t tx_power;
     uint16_t work_mode_flag; 
-	uint8_t ota_indicate_pin;//ÉèÖÃOTA Ö¸Ê¾pin £º 0 - 32
-	uint8_t ota_toggle_type; //ÉèÖÃ Ö¸Ê¾IO£¨LED£© ÀàÐÍ  1:¸ßµçÆ½ÁÁ   0£ºµÍµçÆ½ÁÁ
-	uint16_t ota_io_toggle_time;//ÉèÖÃIO ·­×ªµÄÆµÂÊ £ºÉý¼¶Ê±ÉÁË¸ÆµÂÊ
+	uint8_t ota_indicate_pin;//ï¿½ï¿½ï¿½ï¿½OTA Ö¸Ê¾pin ï¿½ï¿½ 0 - 32
+	uint8_t ota_toggle_type; //ï¿½ï¿½ï¿½ï¿½ Ö¸Ê¾IOï¿½ï¿½LEDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½  1:ï¿½ßµï¿½Æ½ï¿½ï¿½   0ï¿½ï¿½ï¿½Íµï¿½Æ½ï¿½ï¿½
+	uint16_t ota_io_toggle_time;//ï¿½ï¿½ï¿½ï¿½IO ï¿½ï¿½×ªï¿½ï¿½Æµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ë¸Æµï¿½ï¿½
     uint16_t crc;    
 }ota_flag_t;
 #define ota_flag_size 32
@@ -58,13 +58,13 @@ void set_ota_addr(uint8_t *addr)
 		ota_addr [i] = addr[i]  + 1;
 	}
 }
-//¼ÆËãKeyÖµcrc
+//ï¿½ï¿½ï¿½ï¿½KeyÖµcrc
 uint16_t ota_key_crc_calc(uint16_t crc)
 {
     return calc_crc16((unsigned char*)&Key,sizeof(Key),crc);
 }
 
-//crcÐ£Ñé
+//crcÐ£ï¿½ï¿½
 uint16_t ota_msg_crc_calc(uint8_t *msg,uint16_t len)
 {
     uint16_t crc=0x0000;
@@ -75,7 +75,7 @@ uint16_t ota_msg_crc_calc(uint8_t *msg,uint16_t len)
     return crc;
 }
 
-void system_reset()//È«¾ÖÈí¸´Î»
+void system_reset()//È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
 {
 	
     ota_flag->company_id =  OTA_VENDOR_ID;
@@ -84,19 +84,19 @@ void system_reset()//È«¾ÖÈí¸´Î»
     
 	extern uint8_t device_ble_addr[];
 	memcpy(ota_flag->app_ble_addr,(void *)&ota_addr,sizeof(ota_flag->app_ble_addr));
-   ota_flag->addr_type = 0; //0:¾²Ì¬µØÖ·  1:random µØÖ· ¸ù¾Ý³ÌÐòÊµ¼ÊµØÖ·ÀàÐÍ¾ö¶¨
+   ota_flag->addr_type = 0; //0:ï¿½ï¿½Ì¬ï¿½ï¿½Ö·  1:random ï¿½ï¿½Ö· ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½Êµï¿½Êµï¿½Ö·ï¿½ï¿½ï¿½Í¾ï¿½ï¿½ï¿½
 	#if(USE_EXT_XTAL_32M)
-	ota_flag->freq_offset = 0xAD;//¾§ÕñÆµÆ«
+	ota_flag->freq_offset = 0xAD;//ï¿½ï¿½ï¿½ï¿½ÆµÆ«
     ota_flag->xtal_select = 0x20;//0x10:16M   0x20:32M   
 	#else
-    ota_flag->freq_offset = 0x78;//¾§ÕñÆµÆ«
+    ota_flag->freq_offset = 0x78;//ï¿½ï¿½ï¿½ï¿½ÆµÆ«
     ota_flag->xtal_select = 0x10;//0x10:16M   0x20:32M    
 	#endif
 	ota_flag->tx_power = TX_POWER_9 + 1; //power 0dbm
 	
-	ota_flag->ota_indicate_pin = 2 ; //PA2 : ·¶Î§ 0 - 31
-	ota_flag->ota_toggle_type = 0 ; //µÍµçÆ½ÁÁ
-	ota_flag->ota_io_toggle_time = 100 ;//100m·­×ªÒ»´Î
+	ota_flag->ota_indicate_pin = 2 ; //PA2 : ï¿½ï¿½Î§ 0 - 31
+	ota_flag->ota_toggle_type = 0 ; //ï¿½Íµï¿½Æ½ï¿½ï¿½
+	ota_flag->ota_io_toggle_time = 100 ;//100mï¿½ï¿½×ªÒ»ï¿½ï¿½
 	
     ota_flag->crc = calc_crc16((uint8_t *)ota_flag,ota_flag_size,crc_init);
  dbg_block_printk("will reboot ... \n");	
@@ -142,7 +142,7 @@ uint16_t ota_get_version(uint16_t img_type,uint16_t *ver,uint32_t size )
 	return FALSE;
 }
 
-//ÉèÖÃ¹¤×÷Ä£Ê½
+//ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½Ä£Ê½
 uint16_t  ota_mode_set(uint16_t mode)
 { 
     if(mode == NORMAL_MODE)
@@ -177,7 +177,7 @@ uint8_t ota_cmd_ctl(uint8_t *buf,uint16_t len)
         
         switch(msg[0])
         {
-            case WS_OTA_OP_VER_REQ://»ñÈ¡°æ±¾ºÅ
+            case WS_OTA_OP_VER_REQ://ï¿½ï¿½È¡ï¿½æ±¾ï¿½ï¿½
 			{
 				if(len == WS_OTA_VER_REQ_MSG_SIZE)
                 {
@@ -215,7 +215,7 @@ dbg_printk("set mode msg %x mode %d\n",msg[0],ota_mode_set_req->mode);
 					{      
 						static stack_timer_t reset_timer;
 dbg_block_printk("will reset \r\n");
-						lib_start_timer(&reset_timer,system_reset,1500);						
+						lib_start_timer(&reset_timer,(void (*)(stack_timer_t *))system_reset,1500);						
 					}										
 				}
 			}
@@ -227,7 +227,7 @@ dbg_block_printk("will reset \r\n");
 				{	                
                 	dbg_printk("get mode msg %x\n",msg[0]);
 	                ws_ota_mode_get_rsp_t ota_mode_get_rsp ; 
-                    ota_flag->work_mode_flag = 0;//Õý³£Ä£Ê½
+                    ota_flag->work_mode_flag = 0;//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
                     ota_mode_get_rsp.mode = ota_mode_get();
                     ota_mode_get_rsp.opcode = WS_OTA_OP_MODE_GET_RSP;
                     ota_event_respones((uint8_t *)&ota_mode_get_rsp,WS_OTA_MODE_GET_RSP_MSG_SIZE);                     

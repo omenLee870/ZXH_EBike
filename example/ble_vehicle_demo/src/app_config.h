@@ -27,7 +27,7 @@
 /* 1: enable sdk sleep 0: disable sdk sleep */
 #define SDK_ENABLE_SLEEP		0
 
-/* ¾ØÕó°´¼ü */
+/* ï¿½ï¿½ï¿½ó°´¼ï¿½ */
 #define MATRIX_BUTTON_ENABLE			0
 /* uart config */
 #define UART_ENABLE					  1
@@ -49,7 +49,7 @@
 
 
 /* wdt config */
-#define WDT_ENABLE				0
+#define WDT_ENABLE				1
 #define WDT_TIMEOUT				10	//Time = N s
 
 
