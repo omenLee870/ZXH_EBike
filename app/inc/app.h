@@ -12,9 +12,13 @@
 
 /* --- 业务层模块集中包含 --- */
 #include "app_task.h"
+#include "app_debug.h"
 
 
 /* --- 业务频率全局宏定义 --- */
 
+
+/* --- 项目宏 --- */
+#define ZXH_EBike 1
 
 #endif /* _APP_H_ */

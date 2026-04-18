@@ -98,8 +98,7 @@ void system_reset()//ȫ������λ
 	ota_flag->ota_toggle_type = 0 ; //�͵�ƽ��
 	ota_flag->ota_io_toggle_time = 100 ;//100m��תһ��
 	
-    ota_flag->crc = calc_crc16((uint8_t *)ota_flag,ota_flag_size,crc_init);
- dbg_block_printk("will reboot ... \n");	
+    ota_flag->crc = calc_crc16((uint8_t *)ota_flag,ota_flag_size,crc_init);	
     CRM->SOFT_RST |= CRM_SOFT_RST_GLB;
 }
 
@@ -214,7 +213,6 @@ dbg_printk("set mode msg %x mode %d\n",msg[0],ota_mode_set_req->mode);
 					if(ota_mode_set_rsp.err == WS_OTA_ERR_SUCCESS || ota_mode_set_rsp.err == WS_OTA_ERR_NO_SUPPORT)
 					{      
 						static stack_timer_t reset_timer;
-dbg_block_printk("will reset \r\n");
 						lib_start_timer(&reset_timer,(void (*)(stack_timer_t *))system_reset,1500);						
 					}										
 				}
