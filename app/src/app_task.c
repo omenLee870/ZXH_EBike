@@ -14,6 +14,7 @@
 /* 枚举自动管理任务数量 */
 typedef enum {
     APP_TASK_MS_TEST = 0,
+    APP_TASK_LCD_REFRESH,   // 【新增】添加 LCD 刷新任务的枚举 ID
     APP_TASKS_MAX_NUM
 } app_task_id_t;
 
@@ -50,7 +51,18 @@ static app_task_info_t app_tasks_table[APP_TASKS_MAX_NUM] = {
             .timeout_cb = test_task_run,
             .arg = NULL
         }
-    }
+    },
+    // 【新增】LCD 刷新任务注册
+    [APP_TASK_LCD_REFRESH] = {
+        .task_name = "LCD_Refresh_Task",
+        .init_func = app_lcd_init,       // 挂载我们写的 Init 接口
+        .timer_handle = {
+            .timeout = 50,               // 启动后延迟 50ms 触发第一次
+            .repeat  = 50,               // 之后每 50ms (即20Hz刷新率) 执行一次 run 函数
+            .timeout_cb = app_lcd_task_run, // 挂载我们写的 Run 接口
+            .arg = NULL
+        }
+    },
 };
 
 /* --- 任务管理器初始化 --- */

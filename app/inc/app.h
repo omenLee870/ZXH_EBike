@@ -13,6 +13,7 @@
 /* --- 业务层模块集中包含 --- */
 #include "app_task.h"
 #include "app_debug.h"
+#include "app_lcd.h"
 
 
 /* --- 业务频率全局宏定义 --- */
