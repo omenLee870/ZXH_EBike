@@ -15,6 +15,7 @@
 typedef enum {
     APP_TASK_MS_TEST = 0,
     APP_TASK_LCD_REFRESH,   // 【新增】添加 LCD 刷新任务的枚举 ID
+    APP_TASK_KEY_SCAN,       // 【新增】添加按键扫描任务的枚举 ID
     APP_TASKS_MAX_NUM
 } app_task_id_t;
 
@@ -63,6 +64,16 @@ static app_task_info_t app_tasks_table[APP_TASKS_MAX_NUM] = {
             .arg = NULL
         }
     },
+    [APP_TASK_KEY_SCAN] = {
+        .task_name = "Key_Scan_Task",
+        .init_func = app_key_init,       // 挂载按键初始化接口
+        .timer_handle = {
+            .timeout = 10,               // 启动后延迟 10ms 触发
+            .repeat  = 10,               // 之后每 10ms 执行一次 (配合 APPKEY_DEBOUNCE_MS)
+            .timeout_cb = app_key_task_run, // 挂载我们暴露的执行逻辑
+            .arg = NULL
+        }
+    }
 };
 
 /* --- 任务管理器初始化 --- */

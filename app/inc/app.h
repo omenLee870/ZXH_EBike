@@ -14,6 +14,7 @@
 #include "app_task.h"
 #include "app_debug.h"
 #include "app_lcd.h"
+#include "app_key.h"
 
 
 /* --- 业务频率全局宏定义 --- */
