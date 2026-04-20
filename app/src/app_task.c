@@ -19,6 +19,7 @@ typedef enum {
     APP_TASK_NFC_DETECT,     // 【新增】添加 NFC 卡检测任务的枚举 ID
     APP_TASK_BLE_SCHEDULE, // 新增蓝牙调度任务
     APP_TASK_BLE_PROCESS,       // 新增：蓝牙数据处理任务
+    APP_TASK_LITHIUM,        // 新增锂电协议任务
     APP_TASKS_MAX_NUM
 } app_task_id_t;
 
@@ -115,6 +116,16 @@ static app_task_info_t app_tasks_table[APP_TASKS_MAX_NUM] = {
             .timeout = 20,
             .repeat = 10,
             .timeout_cb = ble_process_run }
+    },
+    [APP_TASK_LITHIUM] = {
+        .task_name = "Lithium_Protocol",
+        .init_func = app_lithium_init,
+        .timer_handle = {
+            .timeout = 10,               // 10ms 后首次执行
+            .repeat  = 10,               // 每 10ms 执行一次
+            .timeout_cb = app_lithium_task_run,
+            .arg = NULL
+        }
     },
 };
 

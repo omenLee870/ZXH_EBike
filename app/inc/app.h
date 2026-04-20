@@ -18,6 +18,7 @@
 #include "app_nfc_process.h"
 #include "app_ble_data_process.h"
 #include "app_kv_flash.h"
+#include "app_lithium.h"
 
 
 /* --- 业务频率全局宏定义 --- */
