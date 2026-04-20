@@ -1,9 +1,9 @@
 /**
- * @file display_service.h
+ * @file app_display_service.h
  * @brief 显示服务层，负责管理显存和逻辑映射
  */
-#ifndef _DISPLAY_SERVICE_H_
-#define _DISPLAY_SERVICE_H_
+#ifndef _APP_DISPLAY_SERVICE_H_
+#define _APP_DISPLAY_SERVICE_H_
 
 #include <stdint.h>
 #include <stdbool.h>

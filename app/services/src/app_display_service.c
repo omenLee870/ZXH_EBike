@@ -1,8 +1,8 @@
 /**
- * @file display_service.c
+ * @file app_display_service.c
  * @brief 显示服务中间层
  */
-#include "display_service.h"
+#include "app_display_service.h"
 #include "bsp_vk1621.h"
 
 /* * 显存 Buffer，与硬件 RAM 一一对应

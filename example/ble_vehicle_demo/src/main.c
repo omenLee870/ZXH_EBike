@@ -22,7 +22,6 @@
 void bt_task_schdule(void)
 {
 	lib_bluetooth_schedule();
-    
 	transport_data_schedule();
 }
 

@@ -1,6 +1,6 @@
 #include "app.h"
 #include "app_lcd.h"
-#include "display_service.h" 
+#include "app_display_service.h" 
 
 // 内部状态机，用于控制LCD开机自检动画等
 typedef enum {

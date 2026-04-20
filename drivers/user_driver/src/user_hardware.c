@@ -47,7 +47,7 @@ void iwdt_configuration(void)
 	iwdt_enable();
 }
 
-void hardware_init(void)
+void  hardware_init(void)
 {
 	crm_cmd_periph_clock(CRM_CG_CTRL_IWDT | CRM_CG_CTRL_UART0 | CRM_CG_CTRL_QDEC | CRM_CG_CTRL_TIMER | CRM_CG_CTRL_GPIO | CRM_CG_CTRL_SYSCFG | CRM_CG_CTRL_BT | CRM_CG_CTRL_HW_RF_SPI | CRM_CG_CTRL_LIB_22,ENABLE);
 	crm_reset_periph(CRM_SOFT_RST_UART0 | CRM_SOFT_RST_BT | CRM_SOFT_RST_QDEC);

@@ -3,7 +3,7 @@
 
 #define SOFT_VERSION	"1.00"
 
-#define BLE_STORE_ENABLE 1	//回连匹配设备功能
+#define BLE_STORE_ENABLE 1	//????????豸????
 
 #define MAX_SPP_MTU				      128
 
@@ -20,6 +20,8 @@ uint8_t transport_complete_flag = 1;
 uint8_t transport_uilen;
 stack_timer_t updata_param_request_timer;//updta timer
 uint8_t device_ble_addr[] = {0xAD,0xBC,0xDE,0x60,0x40,0x32};
+static ble_rx_data_callback_t g_ble_rx_callback = NULL;   // 接收回调指针
+
 typedef struct
 {
 	bd_addr_t addr;
@@ -27,11 +29,15 @@ typedef struct
 	link_key_type_t type;
 }PAIR_INFO_T;
 
-
+// 实现注册函数
+void transport_register_rx_callback(ble_rx_data_callback_t cb)
+{
+    g_ble_rx_callback = cb;
+}
 
 void ble_send_data(void *arg)
 {
-	//上报att数据会产生ATT_EVENT_CAN_SEND_NOW事件，在事件中再调用发送函数
+	//???att????????ATT_EVENT_CAN_SEND_NOW????????????????÷??????
 	att_server_request_can_send_now_event(connection_handle);	
 }
 
@@ -41,7 +47,7 @@ static void att_transport_report(void)
 	if(ERROR_CODE_SUCCESS == ret){
 		transport_complete_flag = 1;
 	}else{
-		lib_event_post(ble_send_data,NULL);//提交到事件队列中处理，不直接调用发送函数
+		lib_event_post(ble_send_data,NULL);//????????????д????????????÷??????
 	}
 }
 
@@ -56,7 +62,7 @@ static uint16_t att_read_callback_handle_blob(const uint8_t * blob, uint16_t blo
     }
 }
 
-//属性中带有ATT_PROPERTY_DYNAMIC会走到这里，否则就是静态数据
+//?????д???ATT_PROPERTY_DYNAMIC??????????????????????
 static uint16_t att_read_callback(uint16_t con_handle, uint16_t att_handle, uint16_t offset, uint8_t * buffer, uint16_t buffer_size)
 {
 	if(att_handle != iot_server_rx_handle) return 0;
@@ -67,7 +73,7 @@ static uint16_t att_read_callback(uint16_t con_handle, uint16_t att_handle, uint
 
 //write requests
 static int att_write_callback(uint16_t con_handle, uint16_t att_handle, uint16_t transaction_mode, uint16_t offset, uint8_t *buffer, uint16_t buffer_size)
-{
+{ 
 
 	if (transaction_mode == ATT_TRANSACTION_MODE_CANCEL) return 0;
 	
@@ -81,12 +87,15 @@ static int att_write_callback(uint16_t con_handle, uint16_t att_handle, uint16_t
 			dbg_printk("ccc disable\n");
 		}
 	}
-	//接收到手机的数据
+	//??????????????
 	if(att_handle == iot_server_rx_handle)
 	{
 		if(buffer)
 		{
-			LogHex("ble_receive_buffer",buffer,buffer_size);
+			// 如果应用层注册了回调，则转发数据
+            if(g_ble_rx_callback){
+                g_ble_rx_callback(buffer, buffer_size);
+            }
 		}
 	}
 #if OTA_SURPORT
@@ -185,7 +194,7 @@ void adv_report_process(uint8_t *packet)
 #if 1
 			case 0x09:{
 			}break;
-			case 0xFF:{	/* 遥控器AD Type */	
+			case 0xFF:{	/* ?????AD Type */	
 
 			}
 			break;	
@@ -245,19 +254,19 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 							{
 								case GAP_RANDOM_ADDRESS_TYPE_OFF:
 								case GAP_RANDOM_ADDRESS_TYPE_STATIC:
-								memcpy(&g_store_pair_info.nvram[g_store_pair_info.nvram_index * 16],data,6);	//存储的6字节设备地址
+								memcpy(&g_store_pair_info.nvram[g_store_pair_info.nvram_index * 16],data,6);	//?洢??6????豸???
 								g_store_pair_info.nvram_index = (g_store_pair_info.nvram_index + 1) % MAX_STORE_NUM;
 								break;
 								
 								case GAP_RANDOM_ADDRESS_NON_RESOLVABLE:
-								memcpy(&g_store_pair_info.nvram[g_store_pair_info.nvram_index * 16],data,8);//存储的8字节的rand
+								memcpy(&g_store_pair_info.nvram[g_store_pair_info.nvram_index * 16],data,8);//?洢??8????rand
 								g_store_pair_info.nvram_index = (g_store_pair_info.nvram_index + 1) % MAX_STORE_NUM;
 								break;
 								
 								case GAP_RANDOM_ADDRESS_RESOLVABLE:
 								pair_device_state = 1;
 								if(!is_pair_info_exist(data)){
-									memcpy(&g_store_pair_info.nvram[g_store_pair_info.nvram_index * 16],data,16);//存储的16字节的irk
+									memcpy(&g_store_pair_info.nvram[g_store_pair_info.nvram_index * 16],data,16);//?洢??16????irk
 									store_pair_info_to_flash();
 									g_store_pair_info.nvram_index = (g_store_pair_info.nvram_index + 1) % MAX_STORE_NUM;
 								}							
@@ -289,27 +298,27 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 						switch(type)
 						{
 							case GAP_RANDOM_ADDRESS_TYPE_OFF:
-							case GAP_RANDOM_ADDRESS_TYPE_STATIC://根据地址去匹配设备，从已经存储的设备地址里面匹配回连的设备
+							case GAP_RANDOM_ADDRESS_TYPE_STATIC://???????????豸????????洢???豸????????????????豸
 							for(int i = 0; i < MAX_STORE_NUM; i++)
 							{
 								if(memcmp(data,&g_store_pair_info.nvram[i * 16],6) == 0)
-								{//匹配到设备
+								{//????豸
 									
 								}
 							}
 							break;
 							
-							case GAP_RANDOM_ADDRESS_NON_RESOLVABLE://根据rand去匹配设备，从已经记录的rand里面去匹配回连的设备
+							case GAP_RANDOM_ADDRESS_NON_RESOLVABLE://????rand?????豸????????????rand??????????????豸
 							for(int i = 0; i < MAX_STORE_NUM; i++)
 							{
 								if(memcmp(data,&g_store_pair_info.nvram[i * 16],8) == 0)
-								{//匹配到设备
+								{//????豸
 									
 								}
 							}
 							break;
 							
-							case GAP_RANDOM_ADDRESS_RESOLVABLE://根据irk匹配设备，遍历记录的irk，使用sm_irk_match去匹配是否是回连的设备
+							case GAP_RANDOM_ADDRESS_RESOLVABLE://????irk????豸???????????irk?????sm_irk_match???????????????豸
 							sm_irk_match_process(NULL);
 							break;
 						}
@@ -319,7 +328,7 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 			
                 case HCI_EVENT_LE_META:
                     switch (hci_event_le_meta_get_subevent_code(packet)) {
-                        case HCI_SUBEVENT_LE_CONNECTION_COMPLETE://连接完成的回调
+                        case HCI_SUBEVENT_LE_CONNECTION_COMPLETE://??????????
 						// print connection parameters (without using float operations)
 						if(hci_subevent_le_connection_complete_get_status(packet) != 0x00) return;
 						connection_handle = hci_subevent_le_connection_complete_get_connection_handle(packet);
@@ -327,7 +336,7 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 
 						
 						break;
-                        case HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE://更新连接参数完成的回调
+                        case HCI_SUBEVENT_LE_CONNECTION_UPDATE_COMPLETE://?????????????????
 						// print connection parameters (without using float operations)
                         conn_interval = hci_subevent_le_connection_update_complete_get_conn_interval(packet);
 						dbg_printk("- Connection Update Interval: %u.%02u ms\n", conn_interval * 125 / 100, 25 * (conn_interval & 3));
@@ -347,7 +356,7 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 					dbg_printk("ATT_EVENT_CONNECTED DEFAULT MTU %d\n",att_server_get_mtu(connection_handle));
 				}break;
 				
-				case ATT_EVENT_MTU_EXCHANGE_COMPLETE://更新MTU的事件
+				case ATT_EVENT_MTU_EXCHANGE_COMPLETE://????MTU?????
 				 {
 					  transport_mtu = att_event_mtu_exchange_complete_get_MTU(packet) - 3;
 #if OTA_SURPORT
@@ -356,7 +365,7 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 					 dbg_printk("ATT MTU EXCHANGE COMPLETE %d\n",att_event_mtu_exchange_complete_get_MTU(packet));
 				 }break;
 
-		    	case ATT_EVENT_CAN_SEND_NOW://att层可以发送数据的事件
+		    	case ATT_EVENT_CAN_SEND_NOW://att????????????????
 				{
 #if OTA_SURPORT
 					if(get_ota_requir_send_once()){
@@ -370,12 +379,12 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
 
 				}
 				break;
-				case GAP_EVENT_ADVERTISING_REPORT://扫描事件
+				case GAP_EVENT_ADVERTISING_REPORT://??????
 #ifdef SCAN_ADV			
 			adv_report_process(packet);
 #endif
 				break;
-			   case HCI_EVENT_ENCRYPTION_CHANGE: //加密事件
+			   case HCI_EVENT_ENCRYPTION_CHANGE: //???????
 				break;
 
 				default:
@@ -399,7 +408,7 @@ void transport_data_schedule(void)
 	{
 		case BLE_CONNECTED:
 		transport_complete_flag = 0;
-		lib_event_post(ble_send_data,NULL);//提交到事件队列中处理，不建议直接调用发送函数
+		lib_event_post(ble_send_data,NULL);//????????????д????????????????÷??????
 		break;
 		default:	
 		break;
@@ -458,7 +467,7 @@ uint8_t adv_data[31] = {
 //    0x03, BLUETOOTH_DATA_TYPE_APPEARANCE, 0x80, 0x01,
     // Appearance HID - Mouse (Category 15, Sub-Category 2)
     0x03, BLUETOOTH_DATA_TYPE_APPEARANCE, 0xC2, 0x00,
-		0x06,0xff,0xff,0xff,0xff,0xff,0xff,//蓝牙数据需要填满31个字节防止有些数据扫描包扫不到	
+		0x06,0xff,0xff,0xff,0xff,0xff,0xff,//???????????????31?????????Щ?????????????	
 };
 
 uint8_t scan_resp_data[31] = {
@@ -467,7 +476,7 @@ uint8_t scan_resp_data[31] = {
 };
 void ble_gatt_send_data(uint8_t *p_data,uint16_t len)
 {
-	user_ring_buffer_write(&g_ring_buffer,(uint8_t*)p_data,len);//写数据
+	user_ring_buffer_write(&g_ring_buffer,(uint8_t*)p_data,len);//д????
 }
 static stack_timer_t notify_timer;
 static void notify_event_handler(stack_timer_t *ts)
@@ -478,7 +487,7 @@ static void notify_event_handler(stack_timer_t *ts)
 		ble_gatt_send_data(notify_data,6);
 	lib_start_timer(&notify_timer,notify_event_handler,1000);	
 }
-/*蓝牙广播丢失监测*/
+/*????????????*/
 extern uint8_t IRQ_FLAG;
 stack_timer_t adv_check_timer;
 void adv_check_timer_handler(stack_timer_t *ts)
@@ -488,7 +497,7 @@ void adv_check_timer_handler(stack_timer_t *ts)
 		crm_reset_periph(CRM_SOFT_RST_GLB);
 	}
 	IRQ_FLAG = 1;
-	lib_start_timer(&adv_check_timer,adv_check_timer_handler,10000);//10s检测一次
+	lib_start_timer(&adv_check_timer,adv_check_timer_handler,10000);//10s??????
 }
 bd_addr_t otp_addr;
 void transport_app_init(void)
@@ -519,12 +528,12 @@ void transport_app_init(void)
 	sm_set_authentication_requirements(SM_AUTHREQ_BONDING);
 	sm_set_request_security(1);
 
-    /* 配对失败断开连接 */
+    /* ???????????? */
     sm_pairing_test(1);
-    /* 参数为0x00允许配对 0x08拒绝配对 */
-    sm_test_set_pairing_failure(0x08);//拒绝配对
+    /* ?????0x00??????? 0x08?????? */
+    sm_test_set_pairing_failure(0x08);//??????
     
-	//register att server ATT_PROPERTY_WRITE属性和ATT_PROPERTY_WRITE_WITHOUT_RESPONSE属性都必须注册上ATT_PROPERTY_DYNAMIC属性，否则无法通信
+	//register att server ATT_PROPERTY_WRITE?????ATT_PROPERTY_WRITE_WITHOUT_RESPONSE??????????????ATT_PROPERTY_DYNAMIC???????????????
 	att_db_util_init();
 	
 	uint8_t apperace[]={0xC2,0x00};
@@ -547,7 +556,7 @@ void transport_app_init(void)
 	att_mtu_size(23);
 	lib_get_bd_addr(otp_addr);
 //	gap_set_ble_bd_addr(device_ble_addr);
-	gap_set_ble_bd_addr(otp_addr);//用chip ID做mac地址
+	gap_set_ble_bd_addr(otp_addr);//??chip ID??mac???
 #if OTA_SURPORT
 	ota_app_init();
 	set_ota_addr(otp_addr);	
@@ -567,18 +576,18 @@ void transport_app_init(void)
 	lib_bluetooth_run();
     
 #ifdef SCAN_ADV
-    /* 设置优先级扫描事件低于连接事件*/
+    /* ??????????????????????????*/
     lib_scan_prority_set(0, 0, 1);
 #endif
 
-	user_ring_buffer_init(&g_ring_buffer,stroge,200);//开一个200字节的环形缓冲
+	user_ring_buffer_init(&g_ring_buffer,stroge,200);//?????200??????λ???
 	
-//	notify_event_handler(NULL);//开始定时notify数据_蓝牙连接成功后会有数据上报
-//	nfc_card_init();//nfc初始化
+//	notify_event_handler(NULL);//??????notify????_??????????????????????
+//	nfc_card_init();//nfc?????
 }
 
 
-/* 断开蓝牙 */
+/* ??????? */
 void ble_disconnect(void)
 {
     gap_disconnect(connection_handle);

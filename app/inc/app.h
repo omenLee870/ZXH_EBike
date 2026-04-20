@@ -16,6 +16,7 @@
 #include "app_lcd.h"
 #include "app_key.h"
 #include "app_nfc_process.h"
+#include "app_ble_data_process.h"
 
 
 /* --- 业务频率全局宏定义 --- */
